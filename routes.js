@@ -1,11 +1,17 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
+const fastifyStatic = require('@fastify/static')
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+module.exports = async function routes(fastify) {
+  fastify.register(fastifyStatic, {
+    root: __dirname
+  })
 
-export default async function routes(fastify) {
-    fastify.get('/', (request, reply) => {
-        reply.send({ hello: 'world' })
-      })
+  fastify.get('/', (request, reply) => {
+    reply.sendFile('index.html')
+  })
+
+  fastify.post('/api/text', async (request, reply) => {
+    const { text } = request.body
+    const result = text
+    return { success: true, message: result }
+  })
 }
